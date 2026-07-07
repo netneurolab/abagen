@@ -4,7 +4,7 @@ Tests for abagen.cli module
 """
 
 import os
-from pkg_resources import resource_filename
+from importlib.resources import files
 import pytest
 
 from abagen import __version__ as version
@@ -109,7 +109,7 @@ def test_run_main(capsys, atlas, datadir):
 
 
 def test_exec_run_fail():
-    executable = resource_filename('abagen', 'cli/run.py')
+    executable = files("abagen") / "cli" / "run.py"
 
     # need to set this otherwise it won't fail
     __name__ = '__main__'  # noqa
