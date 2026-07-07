@@ -67,7 +67,7 @@ class Report:
                  probe_selection='diff_stability', donor_probes='aggregate',
                  lr_mirror=None, missing=None, tolerance=2, sample_norm='srs',
                  gene_norm='srs', norm_matched=True, norm_structures=False,
-                 region_agg='donors', agg_metric='mean', corrected_mni=True,
+                 region_agg='donors', agg_metric='mean', corrected_mni='alleninf',
                  reannotated=True, donors='all', return_donors=False,
                  data_dir=None, counts=None, n_probes=None, n_genes=None):
 

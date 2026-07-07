@@ -11,7 +11,7 @@ import nibabel as nib
 import numpy as np
 import pandas as pd
 
-from . import io, transforms, utils
+from . import datasets, io, transforms, utils
 
 LGR = logging.getLogger('abagen')
 
@@ -29,6 +29,91 @@ ONTOLOGY = nib.volumeutils.Recoder(
      ('9512', 'myelencephalon', 'subcortex/brainstem')),
     fields=('id', 'name', 'structure')
 )
+
+DONOR_ID_MAPPING = {'10021': 'H0351.2002', \
+              '12876': 'H0351.1009', \
+              '14380': 'H0351.1012', \
+              '15496': 'H0351.1015', \
+              '15697': 'H0351.1016', \
+              '9861': 'H0351.2001'}
+
+
+def update_cic_coords(annotation, gm=False):
+    """
+    Replaces MNI coords in `annotation` with corrected coords from `CIC`
+    
+    Parameters
+    ----------
+    annotation : str
+        Annotation file from Allen Brain Institute. Optimally obtained 
+        by calling `allen.fetch_microarray()` and accessing the `annotation`
+        attribute on the resulting object
+    gm : bool
+        Whether to use CIC coordinates that have been remapped to gray matter
+        or not. Default: False.
+
+    Returns
+    -------
+    corrected : pandas.DataFrame
+        Annotation data with CIC coordinates
+
+    References
+    ----------
+    Updated CIC coordiates taken from https://gtihub.com/ohanyee/project-ahba-mni-coordinates,
+    which is licensed under the MIT license (reproduced here):
+
+    Copyright (c) 2024 Yohan Yee
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+    """
+    coords = resource_filename(
+        'abagen', os.path.join('data', 'transformed_sample_coordinates.csv.gz')
+    )
+
+    if gm:
+        coords = resource_filename(
+        'abagen', os.path.join('data', 'remapped_sample_coordinates.csv.gz')
+        )
+
+    coords = pd.read_csv(coords).rename(dict(cic_mni_sym09c_x='mni_x',
+                                                cic_mni_sym09c_y='mni_y',
+                                                cic_mni_sym09c_z='mni_z'),
+                                            axis=1)
+    coords = coords.set_index('well_id')
+    coords = coords[['mni_x', 'mni_y', 'mni_z']]
+    
+    annotation = io.read_annotation(annotation, copy=True)
+
+    # basic check that all well_ids in annotation are present in coords
+    # a future pandas update may cause this to raise a KeyError but we want
+    # this to raise a KeyError NOW
+    diff = np.setdiff1d(annotation['well_id'], coords.index)
+    if len(diff) > 0:
+        raise KeyError('Provided annotation file has well IDs that do not '
+                        'exist in updated MNI coordinate file from `alleninf`. '
+                        'Please check input annotation file and try again. '
+                        'Unknown well IDs: {}'.format(diff))
+
+    mni_coords = coords.loc[annotation.well_id]
+    annotation[['mni_x', 'mni_y', 'mni_z']] = np.asarray(mni_coords)
+
+    return annotation
 
 
 def update_mni_coords(annotation):
@@ -107,7 +192,7 @@ def update_mni_coords(annotation):
     return annotation
 
 
-def update_coords(annotation, corrected_mni=True, native_space=None):
+def update_coords(annotation, corrected_mni='alleninf', native_space=None):
     """
     Updates coordinates in `annotation`
 
@@ -117,9 +202,10 @@ def update_coords(annotation, corrected_mni=True, native_space=None):
         Annotation file from Allen Brain Institute. Optimally obtained by
         calling `abagen.fetch_microarray()` and accessing the `annotation`
         value for one of the returned donors
-    corrected_mni : bool
+    corrected_mni : str
         Whether to replace MNI coordinates in `annotation` with coordinates
-        from `alleninf` (uses :func:`update_mni_coords`)
+        from `alleninf` (uses :func:`update_mni_coords`) or from `CIC` 
+        (uses :func: `update_cic_coords`)
     native_space : niimg-like
         Whether to replace MNI coordinates in `annotation` with native-space
         coordinates; uses `affine` of provided image to convert coordinates
@@ -132,9 +218,13 @@ def update_coords(annotation, corrected_mni=True, native_space=None):
 
     annotation = io.read_annotation(annotation, copy=True)
 
-    if corrected_mni:
+    if corrected_mni == 'alleninf':
         annotation = update_mni_coords(annotation)
 
+    elif corrected_mni.startswith('cic'):
+        gm = corrected_mni.endswith('gm')
+        annotation = update_cic_coords(annotation, gm)
+        
     if native_space is not None:
         try:
             native_space = nib.load(native_space)
