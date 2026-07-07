@@ -190,8 +190,8 @@ def get_expression_data(atlas,
         return an `N-1`-dimensional output. Default: 'mean'
     corrected_mni : {'alleninf', 'cic', 'cic_gm'}, optional
         Whether to use the "corrected" MNI coordinates shipped with the
-        `alleninf` package, or the CIC remapping strategy. If `None`, sample 
-        coordinates are the ones provided with the AHBA data when matching tissue 
+        `alleninf` package, or the CIC remapping strategy. If `None`, sample
+        coordinates are the ones provided with the AHBA data when matching tissue
         samples to anatomical regions by affine transforms. Default: 'alleninf'
     reannotated : bool, optional
         Whether to use reannotated probe information provided by [A1]_ instead
