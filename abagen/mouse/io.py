@@ -4,8 +4,7 @@ Functions to fetch (and load) mouse gene and structure lists from Allen API
 """
 
 import os.path as op
-from pkg_resources import resource_filename
-
+from importlib.resources import files
 import pandas as pd
 
 from .utils import _make_api_query
@@ -169,7 +168,7 @@ def fetch_rubinov2015_structures(entry_type=None):
                          'entry_type must be one of {}.'
                          .format(entry_type, entries))
 
-    fname = resource_filename('abagen', 'data/rubinov2015_pnas.csv.gz')
+    fname = files('abagen') / "data" / "rubinov2015_pnas.csv.gz"
     structures = pd.read_csv(fname)[entries]
 
     if entry_type is not None:
