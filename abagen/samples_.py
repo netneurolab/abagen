@@ -39,6 +39,7 @@ DONOR_ID_MAPPING = {
     '9861': 'H0351.2001'
 }
 
+
 def update_cic_coords(annotation, gm=False):
     """
     Replaces MNI coords in `annotation` with corrected coords from `CIC`
@@ -95,7 +96,7 @@ def update_cic_coords(annotation, gm=False):
     coords = pd.read_csv(coords).rename(dict(cic_mni_sym09c_x='mni_x',
                                              cic_mni_sym09c_y='mni_y',
                                              cic_mni_sym09c_z='mni_z'),
-                                         axis=1)
+                                        axis=1)
 
     coords = coords.set_index('well_id')
     coords = coords[['mni_x', 'mni_y', 'mni_z']]
@@ -108,9 +109,9 @@ def update_cic_coords(annotation, gm=False):
     diff = np.setdiff1d(annotation['well_id'], coords.index)
     if len(diff) > 0:
         raise KeyError('Provided annotation file has well IDs that do not '
-                        'exist in updated MNI coordinate file from `alleninf`. '
-                        'Please check input annotation file and try again. '
-                        'Unknown well IDs: {}'.format(diff))
+                    'exist in updated MNI coordinate file from `alleninf`. '
+                    'Please check input annotation file and try again. '
+                    'Unknown well IDs: {}'.format(diff))
 
     mni_coords = coords.loc[annotation.well_id]
     annotation[['mni_x', 'mni_y', 'mni_z']] = np.asarray(mni_coords)
