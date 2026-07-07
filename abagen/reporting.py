@@ -269,7 +269,7 @@ class Report:
             report += """
             The MNI coordinates of tissue samples were updated to those
             generated via non-linear registration using the Advanced
-            Normalization Tools (ANTs) and tissue samples taken from gray matter 
+            Normalization Tools (ANTs) and tissue samples taken from gray matter
             whose coordinates do not fall onto gray matter following template
             registration are mapped to the nearest gray matter voxel
             (https://github.com/yohanlee/project-ahba-mni-coordinates).
