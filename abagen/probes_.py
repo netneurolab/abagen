@@ -8,8 +8,7 @@ import gzip
 from io import StringIO
 import itertools
 import logging
-from pkg_resources import resource_filename
-
+from importlib.resources import files
 import numpy as np
 import pandas as pd
 from scipy import stats as sstats
@@ -49,7 +48,7 @@ def reannotate_probes(probes):
              'et al., 2019, NeuroImage')
 
     # load in reannotated probes
-    reannot = resource_filename('abagen', 'data/reannotated.csv.gz')
+    reannot = files("abagen") / "data" / "reannotated.csv.gz"
     with gzip.open(reannot, 'r') as src:
         reannot = pd.read_csv(StringIO(src.read().decode('utf-8')))
 
