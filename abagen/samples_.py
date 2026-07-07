@@ -11,7 +11,7 @@ import nibabel as nib
 import numpy as np
 import pandas as pd
 
-from . import datasets, io, transforms, utils
+from . import io, transforms, utils
 
 LGR = logging.getLogger('abagen')
 
@@ -30,13 +30,14 @@ ONTOLOGY = nib.volumeutils.Recoder(
     fields=('id', 'name', 'structure')
 )
 
-DONOR_ID_MAPPING = {'10021': 'H0351.2002', \
-              '12876': 'H0351.1009', \
-              '14380': 'H0351.1012', \
-              '15496': 'H0351.1015', \
-              '15697': 'H0351.1016', \
-              '9861': 'H0351.2001'}
-
+DONOR_ID_MAPPING = {
+    '10021': 'H0351.2002',
+    '12876': 'H0351.1009',
+    '14380': 'H0351.1012',
+    '15496': 'H0351.1015',
+    '15697': 'H0351.1016',
+    '9861': 'H0351.2001'
+}
 
 def update_cic_coords(annotation, gm=False):
     """
@@ -45,7 +46,7 @@ def update_cic_coords(annotation, gm=False):
     Parameters
     ----------
     annotation : str
-        Annotation file from Allen Brain Institute. Optimally obtained 
+        Annotation file from Allen Brain Institute. Optimally obtained
         by calling `allen.fetch_microarray()` and accessing the `annotation`
         attribute on the resulting object
     gm : bool
@@ -59,7 +60,7 @@ def update_cic_coords(annotation, gm=False):
 
     References
     ----------
-    Updated CIC coordiates taken from https://gtihub.com/ohanyee/project-ahba-mni-coordinates,
+    Updated CIC coordiates taken from https://github.com/ohanyee/project-ahba-mni-coordinates,
     which is licensed under the MIT license (reproduced here):
 
     Copyright (c) 2024 Yohan Yee
@@ -82,19 +83,25 @@ def update_cic_coords(annotation, gm=False):
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     """
+
     coords = resource_filename(
         'abagen', os.path.join('data', 'transformed_sample_coordinates.csv.gz')
     )
 
     if gm:
         coords = resource_filename(
-        'abagen', os.path.join('data', 'remapped_sample_coordinates.csv.gz')
+            'abagen', os.path.join('data', 'remapped_sample_coordinates.csv.gz')
         )
 
-    coords = pd.read_csv(coords).rename(dict(cic_mni_sym09c_x='mni_x',
-                                                cic_mni_sym09c_y='mni_y',
-                                                cic_mni_sym09c_z='mni_z'),
-                                            axis=1)
+    coords = pd.read_csv(coords).rename(
+        dict(
+            cic_mni_sym09c_x='mni_x',
+            cic_mni_sym09c_y='mni_y',
+            cic_mni_sym09c_z='mni_z'
+            ),
+        axis=1
+        )
+    
     coords = coords.set_index('well_id')
     coords = coords[['mni_x', 'mni_y', 'mni_z']]
     
@@ -224,7 +231,7 @@ def update_coords(annotation, corrected_mni='alleninf', native_space=None):
     elif corrected_mni.startswith('cic'):
         gm = corrected_mni.endswith('gm')
         annotation = update_cic_coords(annotation, gm)
-        
+
     if native_space is not None:
         try:
             native_space = nib.load(native_space)
