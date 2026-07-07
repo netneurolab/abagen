@@ -4,7 +4,6 @@ Functions for downloading the Allen Brain Atlas human microarray dataset.
 """
 
 from collections import namedtuple
-from functools import partial
 import multiprocessing as mp
 import os
 from importlib.resources import files
@@ -28,8 +27,10 @@ WELL_KNOWN_IDS = nib.volumeutils.Recoder(
 VALID_DONORS = sorted(WELL_KNOWN_IDS.value_set('subj')
                       | WELL_KNOWN_IDS.value_set('uid'))
 
+
 def RESOURCE(name):
     return files("abagen").joinpath(*PurePosixPath(name).parts)
+
 
 def check_donors(donors, default='12876', valid=VALID_DONORS):
     """

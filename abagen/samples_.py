@@ -4,7 +4,6 @@ Functions for cleaning and processing the AHBA microarray dataset
 """
 
 import logging
-import os
 from importlib.resources import files
 import nibabel as nib
 import numpy as np
