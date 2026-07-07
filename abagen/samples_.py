@@ -109,9 +109,9 @@ def update_cic_coords(annotation, gm=False):
     diff = np.setdiff1d(annotation['well_id'], coords.index)
     if len(diff) > 0:
         raise KeyError('Provided annotation file has well IDs that do not '
-                    'exist in updated MNI coordinate file from `alleninf`. '
-                    'Please check input annotation file and try again. '
-                    'Unknown well IDs: {}'.format(diff))
+                       'exist in updated MNI coordinate file from `alleninf`. '
+                       'Please check input annotation file and try again. '
+                       'Unknown well IDs: {}'.format(diff))
 
     mni_coords = coords.loc[annotation.well_id]
     annotation[['mni_x', 'mni_y', 'mni_z']] = np.asarray(mni_coords)
