@@ -7,8 +7,7 @@ from collections import namedtuple
 from functools import partial
 import multiprocessing as mp
 import os
-from pkg_resources import resource_filename
-
+import importlib.resources as pkg_resources
 import nibabel as nib
 import pandas as pd
 
@@ -27,7 +26,7 @@ WELL_KNOWN_IDS = nib.volumeutils.Recoder(
 )
 VALID_DONORS = sorted(WELL_KNOWN_IDS.value_set('subj')
                       | WELL_KNOWN_IDS.value_set('uid'))
-RESOURCE = partial(resource_filename, 'abagen')
+RESOURCE = partial(pkg_resources.resource_filename, 'abagen')
 
 
 def check_donors(donors, default='12876', valid=VALID_DONORS):

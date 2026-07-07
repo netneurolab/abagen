@@ -5,7 +5,7 @@ Functions for cleaning and processing the AHBA microarray dataset
 
 import logging
 import os
-from pkg_resources import resource_filename
+import importlib.resources as pkg_resources
 
 import nibabel as nib
 import numpy as np
@@ -76,12 +76,12 @@ def update_cic_coords(annotation, gm=False):
     SOFTWARE.
     """
 
-    coords = resource_filename(
+    coords = pkg_resources.pkg_resources(
         'abagen', os.path.join('data', 'transformed_sample_coordinates.csv.gz')
     )
 
     if gm:
-        coords = resource_filename(
+        coords = pkg_resources.resource_filename(
             'abagen', os.path.join('data', 'remapped_sample_coordinates.csv.gz')
         )
     coords = pd.read_csv(coords).rename(dict(cic_mni_sym09c_x='mni_x',
@@ -159,7 +159,7 @@ def update_mni_coords(annotation):
     POSSIBILITY OF SUCH DAMAGE.
     """
 
-    coords = resource_filename(
+    coords = pkg_resources.resource_filename(
         'abagen', os.path.join('data', 'corrected_mni_coordinates.csv.gz')
     )
     coords = pd.read_csv(coords).rename(dict(corrected_mni_x='mni_x',
