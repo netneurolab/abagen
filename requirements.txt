@@ -2,3 +2,4 @@ nibabel
 numpy>=1.14.0
 pandas>=1.5.0
 scipy
+setuptools<82
