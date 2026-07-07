@@ -270,7 +270,7 @@ def _fetch_file(url, data_dir, resume=True, overwrite=False,
     try:
         # Download data
         url_opener = urllib.request.build_opener(*handlers)
-        request = urllib.request.Request(url)
+        request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         request.add_header('Connection', 'Keep-Alive')
         if username is not None and password is not None:
             if not url.startswith('https'):
