@@ -141,6 +141,7 @@ def fetch_microarray(data_dir=None, donors=None, resume=True, verbose=1,
                                         dict(resume=resume, verbose=verbose))
                        for f in files]
             # flatten outputs into single list
+            print(results)
             files = [fn for res in results for fn in res.get()]
     else:
         # flatten list of lists into single list
