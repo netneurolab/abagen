@@ -231,7 +231,7 @@ def test_check_atlas_info(atlas):
 
 def test_coerce_atlas_to_dict(testfiles, atlas):
     img, info = atlas['image'], atlas['info']
-    donors = ['12876', '15496']
+    donors = ['12876', '15697']
 
     # test providing single atlas file
     atl, same = images.coerce_atlas_to_dict(img, donors, info)

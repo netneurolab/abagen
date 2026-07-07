@@ -11,7 +11,7 @@ from abagen import transforms
 
 @pytest.mark.parametrize('xyz, fsnative, donor', [
     ([0, 0, 0], [0, 1, 1], '12876'),
-    ([0, 0, 0], [1, 18, -18], '15496')
+    ([0, 0, 0], [1, 18, -18], '15697')
 ])
 def test_ijk_to_fsnative(xyz, fsnative, donor):
     assert np.allclose(transforms.xyz_to_fsnative(xyz, donor), fsnative)

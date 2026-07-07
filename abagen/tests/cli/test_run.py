@@ -51,7 +51,7 @@ def test_run_get_parser(capsys, atlas, datadir):
         '-v', '-v', '-v',
         '--debug',
         '--atlas-info', atlas['info'],
-        '--donors', '12876', '15496',
+        '--donors', '12876', '15697',
         '--data-dir', datadir,
         '--missing', 'centroids',
         '--tol', '5',
@@ -77,7 +77,7 @@ def test_run_main(capsys, atlas, datadir):
     # check basic usage
     run.main([
         '--data-dir', datadir,
-        '--donors', '12876', '15496',
+        '--donors', '12876', '15697',
         '--output-file', outputfile,
         atlas['image']
     ])
@@ -86,18 +86,18 @@ def test_run_main(capsys, atlas, datadir):
     # check that save donors/counts outputs desired files
     run.main([
         '--data-dir', datadir,
-        '--donors', '12876', '15496',
+        '--donors', '12876', '15697',
         '--output-file', outputfile,
         '--save-donors', '--save-counts',
         atlas['image']
     ])
-    for rep in ['_counts.csv', '_12876.csv', '_15496.csv']:
+    for rep in ['_counts.csv', '_12876.csv', '_15697.csv']:
         assert os.path.exists(outputfile.replace('.csv', rep))
 
     # check stdout (BLARGH)
     run.main([
         '--data-dir', datadir,
-        '--donors', '12876', '15496',
+        '--donors', '12876', '15697',
         '--output-file', outputfile,
         '--stdout',
         atlas['image']
