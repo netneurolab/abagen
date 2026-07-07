@@ -5,8 +5,7 @@ Functions for cleaning and processing the AHBA microarray dataset
 
 import logging
 import os
-import importlib.resources as pkg_resources
-
+from importlib.resources import files
 import nibabel as nib
 import numpy as np
 import pandas as pd
@@ -76,14 +75,9 @@ def update_cic_coords(annotation, gm=False):
     SOFTWARE.
     """
 
-    coords = pkg_resources.pkg_resources(
-        'abagen', os.path.join('data', 'transformed_sample_coordinates.csv.gz')
-    )
-
+    coords = files("abagen") / "data" / "transformed_sample_coordinates.csv"
     if gm:
-        coords = pkg_resources.resource_filename(
-            'abagen', os.path.join('data', 'remapped_sample_coordinates.csv.gz')
-        )
+        coords = files("abagen") / "data" / "remapped_sample_coordinates.csv"
     coords = pd.read_csv(coords).rename(dict(cic_mni_sym09c_x='mni_x',
                                              cic_mni_sym09c_y='mni_y',
                                              cic_mni_sym09c_z='mni_z'),
@@ -159,9 +153,7 @@ def update_mni_coords(annotation):
     POSSIBILITY OF SUCH DAMAGE.
     """
 
-    coords = pkg_resources.resource_filename(
-        'abagen', os.path.join('data', 'corrected_mni_coordinates.csv.gz')
-    )
+    coords = files("abagen") / "data" / "corrected_mni_coordinates.csv.gz"
     coords = pd.read_csv(coords).rename(dict(corrected_mni_x='mni_x',
                                              corrected_mni_y='mni_y',
                                              corrected_mni_z='mni_z'),
