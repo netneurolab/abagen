@@ -251,11 +251,28 @@ class Report:
             to represent the expression of each gene for all donors.<br>
             """
 
-        if self.corrected_mni and self.group_atlas:
+        if self.corrected_mni == "alleninf" and self.group_atlas:
             report += """
             The MNI coordinates of tissue samples were updated to those
             generated via non-linear registration using the Advanced
             Normalization Tools (ANTs; https://github.com/chrisfilo/alleninf).
+            """
+
+        if self.corrected_mni == "cic" and self.group_atlas:
+            report += """
+            The MNI coordinates of tissue samples were updated to those
+            generated via non-linear registration using the Advanced
+            Normalization Tools (ANTs; https://github.com/yohanlee/project-ahba-mni-coordinates).
+            """
+
+        if self.corrected_mni == "cic_gm" and self.group_atlas:
+            report += """
+            The MNI coordinates of tissue samples were updated to those
+            generated via non-linear registration using the Advanced
+            Normalization Tools (ANTs) and tissue samples taken from gray matter 
+            whose coordinates do not fall onto gray matter following template
+            registration are mapped to the nearest gray matter voxel
+            (https://github.com/yohanlee/project-ahba-mni-coordinates).
             """
 
         if self.lr_mirror == 'bidirectional':
