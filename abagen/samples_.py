@@ -42,7 +42,7 @@ DONOR_ID_MAPPING = {
 def update_cic_coords(annotation, gm=False):
     """
     Replaces MNI coords in `annotation` with corrected coords from `CIC`
-    
+
     Parameters
     ----------
     annotation : str
@@ -92,19 +92,14 @@ def update_cic_coords(annotation, gm=False):
         coords = resource_filename(
             'abagen', os.path.join('data', 'remapped_sample_coordinates.csv.gz')
         )
+    coords = pd.read_csv(coords).rename(dict(cic_mni_sym09c_x='mni_x',
+                                             cic_mni_sym09c_y='mni_y',
+                                             cic_mni_sym09c_z='mni_z'),
+                                         axis=1)
 
-    coords = pd.read_csv(coords).rename(
-        dict(
-            cic_mni_sym09c_x='mni_x',
-            cic_mni_sym09c_y='mni_y',
-            cic_mni_sym09c_z='mni_z'
-            ),
-        axis=1
-        )
-    
     coords = coords.set_index('well_id')
     coords = coords[['mni_x', 'mni_y', 'mni_z']]
-    
+
     annotation = io.read_annotation(annotation, copy=True)
 
     # basic check that all well_ids in annotation are present in coords
@@ -211,7 +206,7 @@ def update_coords(annotation, corrected_mni='alleninf', native_space=None):
         value for one of the returned donors
     corrected_mni : str
         Whether to replace MNI coordinates in `annotation` with coordinates
-        from `alleninf` (uses :func:`update_mni_coords`) or from `CIC` 
+        from `alleninf` (uses :func:`update_mni_coords`) or from `CIC`
         (uses :func: `update_cic_coords`)
     native_space : niimg-like
         Whether to replace MNI coordinates in `annotation` with native-space
