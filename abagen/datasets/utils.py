@@ -42,7 +42,8 @@ import shutil
 import sys
 import tarfile
 import time
-import urllib
+import urllib.error
+import urllib.request
 import warnings
 import zipfile
 
