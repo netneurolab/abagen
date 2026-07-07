@@ -48,7 +48,7 @@ jobs:
       - name: Print abagen version
         run: python -c "import abagen; print(abagen.__version__)"
       - name: Fetch AHBA data
-        run: python -c "import abagen; abagen.fetch_microarray(data_dir='$ABAGEN_DATA', donors=['12876', '15496'], n_proc=2)"
+        run: python -c "import abagen; abagen.fetch_microarray(data_dir='$ABAGEN_DATA', donors=['12876', '15496'])"
       - name: Upload AHBA data
         uses: actions/upload-artifact@v4
         with:
