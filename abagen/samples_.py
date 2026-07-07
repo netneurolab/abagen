@@ -30,15 +30,6 @@ ONTOLOGY = nib.volumeutils.Recoder(
     fields=('id', 'name', 'structure')
 )
 
-DONOR_ID_MAPPING = {
-    '10021': 'H0351.2002',
-    '12876': 'H0351.1009',
-    '14380': 'H0351.1012',
-    '15496': 'H0351.1015',
-    '15697': 'H0351.1016',
-    '9861': 'H0351.2001'
-}
-
 
 def update_cic_coords(annotation, gm=False):
     """
