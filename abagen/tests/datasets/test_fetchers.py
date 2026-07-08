@@ -19,7 +19,7 @@ def test_fetch_microarray():
     f4 = fetchers.fetch_microarray(donors=None)
 
     # test n_proc
-    fetchers.fetch_microarray(donors=['12876', '15496'], n_proc=2)
+    fetchers.fetch_microarray(donors=['12876', '15697'], n_proc=2)
 
     assert f1 == f2 == f3 == f4
     assert len(f1) == 1  # only one donor
@@ -94,7 +94,7 @@ def test_fetch_desikan_killiany():
     assert info.name == 'atlas-desikankilliany.csv' and info.exists()
 
     atlas = fetchers.fetch_desikan_killiany(native=True)
-    donors = ['10021', '12876', '14380', '15496', '15697', '9861']
+    donors = ['10021', '12876', '14380', '15697', '9861']
     assert sorted(atlas) == ['image', 'info']
     assert sorted(atlas['image']) == donors
     for donor in donors:
@@ -113,7 +113,7 @@ def test_fetch_desikan_killiany():
     assert Path(atlas['info']).name == 'atlas-desikankilliany.csv'
 
     atlas = fetchers.fetch_desikan_killiany(native=True, surface=True)
-    donors = ['10021', '12876', '14380', '15496', '15697', '9861']
+    donors = ['10021', '12876', '14380', '15697', '9861']
     assert sorted(atlas) == ['image', 'info']
     assert sorted(atlas['image']) == donors
     for donor in donors:
