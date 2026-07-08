@@ -4,8 +4,7 @@ Tests for abagen.images module
 """
 
 import gzip
-from pkg_resources import resource_filename
-
+from importlib.resources import files
 import nibabel as nib
 import numpy as np
 import pandas as pd
@@ -35,8 +34,8 @@ def annotation(tmp_path_factory):
 @pytest.fixture(scope='module')
 def fsgeometry():
     return (
-        resource_filename('abagen', 'data/fsaverage5-pial-lh.surf.gii.gz'),
-        resource_filename('abagen', 'data/fsaverage5-pial-rh.surf.gii.gz'),
+        files('abagen') / 'data/fsaverage5-pial-lh.surf.gii.gz',
+        files('abagen') / 'data/fsaverage5-pial-rh.surf.gii.gz',
     )
 
 
@@ -156,7 +155,7 @@ def test_check_atlas(atlas, surface, fsgeometry):
     # check loading donor-specific surface file
     fp = 'data/native_dk/12876/atlas-desikankilliany-{}.label.gii.gz'
     surf = [
-        resource_filename('abagen', fp.format(hemi)) for hemi in ('lh', 'rh')
+        files('abagen') / fp.format(hemi) for hemi in ('lh', 'rh')
     ]
     tree = images.check_atlas(surf, donor='12876')
     assert isinstance(tree, AtlasTree)
@@ -232,7 +231,7 @@ def test_check_atlas_info(atlas):
 
 def test_coerce_atlas_to_dict(testfiles, atlas):
     img, info = atlas['image'], atlas['info']
-    donors = ['12876', '15496']
+    donors = ['12876', '15697']
 
     # test providing single atlas file
     atl, same = images.coerce_atlas_to_dict(img, donors, info)

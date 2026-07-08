@@ -4,11 +4,10 @@ Functions for downloading the Allen Brain Atlas human microarray dataset.
 """
 
 from collections import namedtuple
-from functools import partial
 import multiprocessing as mp
 import os
-from pkg_resources import resource_filename
-
+from importlib.resources import files
+from pathlib import PurePosixPath
 import nibabel as nib
 import pandas as pd
 
@@ -27,7 +26,10 @@ WELL_KNOWN_IDS = nib.volumeutils.Recoder(
 )
 VALID_DONORS = sorted(WELL_KNOWN_IDS.value_set('subj')
                       | WELL_KNOWN_IDS.value_set('uid'))
-RESOURCE = partial(resource_filename, 'abagen')
+
+
+def RESOURCE(name):
+    return files("abagen").joinpath(*PurePosixPath(name).parts)
 
 
 def check_donors(donors, default='12876', valid=VALID_DONORS):
@@ -141,6 +143,7 @@ def fetch_microarray(data_dir=None, donors=None, resume=True, verbose=1,
                                         dict(resume=resume, verbose=verbose))
                        for f in files]
             # flatten outputs into single list
+            print(results)
             files = [fn for res in results for fn in res.get()]
     else:
         # flatten list of lists into single list

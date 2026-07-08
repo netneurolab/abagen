@@ -35,7 +35,7 @@ def get_expression_data(atlas,
                         norm_structures=False,
                         region_agg='donors',
                         agg_metric='mean',
-                        corrected_mni=True,
+                        corrected_mni='alleninf',
                         reannotated=True,
                         return_counts=False,
                         return_donors=False,
@@ -188,10 +188,11 @@ def get_expression_data(atlas,
         level expression (see `region_agg`). If a callable, should be able to
         accept an `N`-dimensional input and the `axis` keyword argument and
         return an `N-1`-dimensional output. Default: 'mean'
-    corrected_mni : bool, optional
+    corrected_mni : {'alleninf', 'cic', 'cic_gm'}, optional
         Whether to use the "corrected" MNI coordinates shipped with the
-        `alleninf` package instead of the coordinates provided with the AHBA
-        data when matching tissue samples to anatomical regions. Default: True
+        `alleninf` package, or the CIC remapping strategy. If `None`, sample
+        coordinates are the ones provided with the AHBA data when matching tissue
+        samples to anatomical regions by affine transforms. Default: 'alleninf'
     reannotated : bool, optional
         Whether to use reannotated probe information provided by [A1]_ instead
         of the default probe information from the AHBA dataset. Using
@@ -625,8 +626,12 @@ def get_samples_in_mask(mask=None, **kwargs):
     # get updated coordinates
     for donor, data in files.items():
         annot = data['annotation']
-        if kwargs.get('corrected_mni', True):
+        if kwargs.get('corrected_mni', 'alleninf'):
             annot = samples_.update_mni_coords(annot)
+        elif kwargs.get('corrected_mni', 'cic'):
+            annot = samples_.update_cic_coords(annot, gm=False)
+        elif kwargs.get('corrected_mni', 'cic_gm'):
+            annot = samples_.update_cic_coords(annot, gm=True)
         files[donor]['annotation'] = annot
     cols = ['well_id', 'mni_x', 'mni_y', 'mni_z']
     coords = np.asarray(pd.concat(flatten_dict(files, 'annotation'))[cols])
